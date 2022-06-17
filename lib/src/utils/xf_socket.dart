@@ -51,7 +51,7 @@ class XfSocket {
   XfSocket.connectVoice({this.onTextResult}) {
     String u = XfUtil.getAuthUrl(_host2, _apiKey, _apiSecret, type: "iat");
     debugPrint('创建连接url = $u');
-    close();
+    // close();
     _channel = IOWebSocketChannel.connect(u);
     //创建监听
     _channel?.stream.listen((message) {
@@ -92,7 +92,7 @@ class XfSocket {
           onTextResult?.call(resultText.toString());
         }
       } else if (status == 2) {
-        // 结束
+        // 识别结束
         close();
       } else {
         onTextResult?.call("数据有误:${xfVoiceRes.message}");
@@ -163,16 +163,27 @@ class XfSocket {
     xfVoiceReq.common = common;
 
     BusinessV business = BusinessV();
+    // 语种 zh_cn:中文
     business.language = "zh_cn";
+    //应用领域
+    // iat：日常用语
+    // medical：医疗
     business.domain = "iat";
+    // 方言
     business.accent = "mandarin";
+    // 静默时间
     business.vadEos = 3000;
+    // 动态修正
     business.dwa = "wpgs";
+    // 使用场景
     business.pd = "game";
-    business.ptt = 0;
+    // 是否开启标点符号
+    business.ptt = 1;
+    // 字体 简体繁体
     business.rlang = "zh-cn";
     business.vinfo = 1;
-    business.nunum = 0;
+    //数字以阿拉伯数字返回
+    business.nunum = 1;
     business.speexSize = 70;
     business.nbest = 3;
     business.wbest = 5;
@@ -190,6 +201,9 @@ class XfSocket {
 
     String req = jsonEncode(xfVoiceReq);
     _channel?.sink.add(req);
-    debugPrint("inputV == $req}");
+    // debugPrint("inputV == $req}");
+    if (state == 2) {
+      close();
+    }
   }
 }
