@@ -140,6 +140,7 @@ class _VoiceTextState extends State<VoiceText> {
                       this.text = text;
                     });
                   });
+                  state = 0;
                   startRecord();
                 },
                 child: Icon(
@@ -148,7 +149,6 @@ class _VoiceTextState extends State<VoiceText> {
                   size: 60,
                 ),
                 onLongPressEnd: (d) {
-
                   _timer?.cancel();
                   state = 2;
                   setState(() {
@@ -181,9 +181,11 @@ class _VoiceTextState extends State<VoiceText> {
       if (state == 0) {
         xfSocket?.sendVoice(buffer.data!, state: state);
         state = 1;
-      } else {
+      } else if (state == 1) {
         xfSocket?.sendVoice(buffer.data!, state: state);
-        state = 0;
+      } else if (state == 2) {
+        xfSocket?.sendVoice(buffer.data!, state: state);
+        state = -1;
       }
     });
     await _mRecorder.startRecorder(

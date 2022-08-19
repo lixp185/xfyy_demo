@@ -51,7 +51,7 @@ class XfSocket {
   XfSocket.connectVoice({this.onTextResult}) {
     String u = XfUtil.getAuthUrl(_host2, _apiKey, _apiSecret, type: "iat");
     debugPrint('创建连接url = $u');
-    // close();
+
     _channel = IOWebSocketChannel.connect(u);
     //创建监听
     _channel?.stream.listen((message) {
@@ -202,8 +202,8 @@ class XfSocket {
     String req = jsonEncode(xfVoiceReq);
     _channel?.sink.add(req);
     // debugPrint("inputV == $req}");
-    if (state == 2) {
-      close();
-    }
+    // if (state == 2) {
+    //   close();
+    // }
   }
 }
